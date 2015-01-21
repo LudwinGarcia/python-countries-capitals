@@ -35,6 +35,12 @@ class ProgramControl(object):
     else:
       os.system('reset')
 
+  def HasNumbers(self, inputString):
+      '''
+      This method check if a string contain letters.
+      '''
+      return any(char.isdigit() for char in inputString)
+
   def FunctionCountry(self):
     '''
     Method that handles the saving of the country with it's capital.
@@ -47,26 +53,9 @@ class ProgramControl(object):
 
       # This "Try" verifies the operation to enter countries with their capital.
       try:
+        # Request revenues by user.
         strCountry = raw_input('\nEnter Name of Country: ')
-        if strCountry.isalpha() == True:
-          pass
-        else:
-          print '\n'+'#' * 44
-          print u'## The country name can\'t contain numbers ##'
-          print '#' * 44
-          raw_input("\n\nPress enter to continue..'")
-          self.FunctionCountry()
-
-        # Control for the entry of the capital.
         strCapital = raw_input('Enter Name of Capital: ')
-        if strCapital.isalpha() == True:
-          pass
-        else:
-          print '\n'+'#' * 44
-          print u'## The capital name can\'t contain numbers ##'
-          print '#' * 44
-          raw_input("\n\nPress enter to continue..'")
-          self.FunctionCountry()
 
         # Checks if the user inputs are empty.
         if strCountry == ''  and strCapital == '':
@@ -88,105 +77,140 @@ class ProgramControl(object):
              raw_input("\n\nPress enter to continue..'")
              self.FunctionCountry()
 
-        # This try controls save entries to the dictionary.
+        # Control for the entry of the country.
+        if self.HasNumbers(strCountry) == False:
+          pass
+        else:
+          print '\n'+'#' * 44
+          print u'## The country name can\'t contain numbers ##'
+          print '#' * 44
+          raw_input("\n\nPress enter to continue...")
+          self.FunctionCountry()
+
+        # Control for the entry of the capital.
+        if self.HasNumbers(strCapital) == False:
+          pass
+        else:
+          print '\n'+'#' * 44
+          print u'## The capital name can\'t contain numbers ##'
+          print '#' * 44
+          raw_input("\n\nPress enter to continue...")
+          self.FunctionCountry()
+      except ValueError as CatchError: # 
+        print CatchError
+        raw_input("\n\nPress enter to continue...")
+
+      try:
+        # Process for saving countries
         strCountry = strCountry.title()
         strCapital = strCapital.title()
         self.paises[strCountry] = strCapital
+
         print '\n' + '=' * 53
         print '= Thank you for adding a country with it\'s capital. ='
         print '=' * 53
-        raw_input("\n\nPreisone Enter para continuar...")
-        self.WipeScreen()
-        return
-      except ValueError as CatchError:
-        print CatchError
-        raw_input("\n\nPress enter to continue..'")
 
-  # Metodo que mostrará el listado de países ingresados.
+        raw_input("\n\nPress enter to continue...")
+        self.WipeScreen()
+        self.Run()
+      except ValueError:
+        print '\n' + '#' * 55
+        print '## Error occurred, please try again and if the error ##'
+        print '## continues, contact the administrator              ##'
+        print '#' * 55
+        self.Run()
+
   def PrintContries(self):
+    '''
+    Method to display the list of countries.
+    '''
     self.WipeScreen()
-    print '\n'
-    print '================================='
-    print u'=      Despliege de Países      ='
-    print '================================='
-    print '\n'
+    print '\n' + '=' * 31
+    print '=      List of countries      ='
+    print '=' * 31 +'\n'
+
     for key in self.paises.keys():
       print str(key) 
-    raw_input("\n\nPreisone Enter para continuar...")
+
+    raw_input("\n\nPress enter to continue...")
     self.WipeScreen()
 
-  # Metodo que mostrará el listado de capitales ingresadas.
-  def PrintCapitales(self):
+  def PrintCapitals(self):
+    '''
+    Method to display the list of capitals.
+    '''
     self.WipeScreen()
-    print '\n'
-    print '================================='
-    print '=     Despliege de Capitales    ='
-    print '================================='
-    print '\n'
+    print '\n' + '=' * 30
+    print '=      List of capitals      ='
+    print '=' * 30 +'\n'
 
     for key, item in self.paises.items():
       print str(item)
 
-    raw_input("\n\nPreisone Enter para continuar...")
+    raw_input("\n\nPress enter to continue...")
     self.WipeScreen()
 
-  # Metodo que mostrará el listado de país y capitales ingresadas.
-  def PrintTodo(self):
+  def PrintAll(self):
+    '''
+    Method to display the list of country and their capitals.
+    '''
     self.WipeScreen()
-    print '\n'
-    print '================================='
-    print u'=  Despliege de País y Capital  ='
-    print '================================='
-    print '\n'
+    print '\n' + '=' * 51
+    print '=      List of countries with their capitals      ='
+    print '=' * 51 +'\n'
 
     for key, item in self.paises.items():
       print str(key) + ' : ' + str(item)
 
-    raw_input("\n\nPreisone Enter para continuar...")
+    raw_input("\n\nPress enter to continue...")
     self.WipeScreen()
 
-  # Metodo que mostrará el listado de país y capitales ordenado por capital.
-  def PrintTodoOrdenadoCap(self):
+  def PrintAllOrderbyCapitals(self):
+    '''
+    Method to display the list of countries with their capitals sorted by capital.
+    '''
     self.WipeScreen()
-    print '\n'
-    print '================================='
-    print u'=  Despliege de País y Capital  ='
-    print '=      Ordenado Por Capital     ='
-    print '================================='
-    print '\n'
+    print '\n' + '=' * 36
+    print '=  List of countries and capitals  ='
+    print '=       Oreder by Capitals         ='
+    print '=' * 36 +'\n'
 
-    # Diccionario temporal que almacenara como llave las capitales
+    # Temporary dictionary that will store as key capitals.
     jsonCapitales = {}
 
     for key, item in self.paises.items():
-      jsonCapitales[item] = key #Guardamos el item como key y la key como item.
+      jsonCapitales[item] = key # Save the item as key and the key as item.
 
-    # Sorted(jsonCapitales.iterkeys()) permite ordenar las capitales
-    # Del diccionario antes de ser mostradas.
+    # Sorted(jsonCapitales.iterkeys()) can sort the capitals
+    # In the dictionary before being displayed.
     for key in sorted(jsonCapitales.iterkeys()):
-       print "%s: %s" % (jsonCapitales[key],key)
+       print "%s : %s" % (jsonCapitales[key],key)
 
-    raw_input("\n\nPreisone Enter para continuar...")
+    raw_input("\n\nPress enter to continue...")
     self.WipeScreen()
 
-  # Metodo que enviara países y capitales por email.
-  def SendMailTodo(self):
+  def SendMailAll(self):
+    '''
+    Method to send by email the countries and capitals.
+    '''
     username = 'garcialudwin10@gmail.com'
     password = 'Cognits2014'
 
-    toaddrs  = 'garcialudwin@galileo.edu'
-    body = 'Países y capitales: \n'
+    toaddrs  = 'lgarcia@cognits.co'
+    body = 'Countries and Capitals: \n'
 
-    # Este loop permite armar el body del email.
+    # This loop creates the body of the email.
     for key, item in self.paises.items():
       body += '\n'+ str(key) + ' : ' + str(item)
 
+    # Forming the body of email
     msg = MIMEMultipart()
     msg['From'] = username
     msg['To'] = toaddrs
-    msg['Subject'] = "Países y capitales by Ludwin Garcia"
+    msg['Subject'] = "Countries and capitals by Ludwin Garcia"
     msg.attach(MIMEText(body, 'plain'))
 
+    # This try controls if the email was sent
     try:
       server = smtplib.SMTP('smtp.gmail.com:587')
       server.starttls()
@@ -194,18 +218,21 @@ class ProgramControl(object):
       text = msg.as_string()
       server.sendmail(username, toaddrs, text)
       server.quit()
-      print '\n'
-      print '==================================='
-      print '= El Correo Se Envio Exitosamente ='
-      print '==================================='
+      print '\n' + '=' * 20
+      print '= The email was sent correctly ='
+      print '=' * 20
+      raw_input("\n\nPress enter to continue...")
     except:
-      print '\n'
-      print '======================================'
-      print u'= Error Al Enviar Correo Electrónico ='
-      print '======================================'
+      print '\n' + '#' * 55
+      print '## Error occurred, please try again and if the error ##'
+      print '## continues, contact the administrator              ##'
+      print '#' * 55
+      raw_input("\n\nPress enter to continue...")
 
-  # Method to show main menu.
   def PrintMainMenu(self):
+    '''
+    Method to show main menu.
+    '''
     self.WipeScreen()
     print '\n'
     print '='*65
@@ -233,54 +260,75 @@ class ProgramControl(object):
     '''
     print '=' * 65 + '\n'
 
-  # MMethod to receive choice of user.
   def GetMenuChoice(self,MAIN_MENU):
+    '''
+    Method to get choice of user and verifies if choice is correctly.
+    '''
     while True:
       self.PrintMainMenu()
       user_input = raw_input('Please type option: ')
       user_input = user_input.lower()
+
       try:
-        if user_input.isalpha() == True:
+        # Verify if user input contains numbers.
+        if self.HasNumbers(user_input) == False: 
+          #Verify if user input exist in the dictionary.
           if user_input in MAIN_MENU.keys():
             return user_input
           else:
-            print '\n' + '=' * 51
-            print "You can only choice menu options, please try again."
-            print '=' * 51
+            print '\n' + '#' * 57
+            print "## You can only choice menu options, please try again. ##"
+            print '#' * 57
             raw_input('\nPress enter to continue...')
         else:
-          print '\n' + '=' * 45
-          print "You only can enter letters, please try again."
-          print '=' * 45
+          print '\n' + '#' * 51
+          print "## You only can enter letters, please try again. ##"
+          print '#' * 51
           raw_input('\nPress enter to continue...')
       except ValueError as CatchError:
         print CatchError
 
+  def Exit(self):
+    '''
+    Method that allows exit from application.
+    '''
+    print '\n' + '*' * 19
+    print '** See you soon! **'
+    print '*' * 19
+    raw_input("\nPlease press enter to exit...")
+    sys.exit(0) 
+
   def Run(self):
+    '''
+    This method controls the calls of methods, inside of class.
+    '''
     MAIN_MENU = {
       'country': self.FunctionCountry,
       'countries': self.PrintContries,
-      'capitals': self.PrintCapitales,
-      'all': self.PrintTodo,
-      'allordered': self.PrintTodoOrdenadoCap,
-      'allmail': self.SendMailTodo
+      'capitals': self.PrintCapitals,
+      'all': self.PrintAll,
+      'allordered': self.PrintAllOrderbyCapitals,
+      'allmail': self.SendMailAll,
+      'exit': self.Exit
     }
     try:
       while True:
         choice = self.GetMenuChoice(MAIN_MENU)
-        if choice == 'exit':
-            print 'See you soon!\n'
-            raw_input("Please press enter to exit...")
-            return
-        else:
-          MAIN_MENU[choice]()
-
+        MAIN_MENU[choice]()
     except KeyboardInterrupt:
-      return
+      print '\n' + '#' * 55
+      print '## Error occurred, please try again and if the error ##'
+      print '## continues, contact the administrator              ##'
+      print '#' * 55
+      sys.exit(0)
 
 def main():
+  '''
+  In this method creates the object and runs the application.
+  '''
   objectProgram = ProgramControl()
   objectProgram.Run()
 
+# Verify if application running by self.
 if __name__ == '__main__':
   main()
